@@ -9,6 +9,8 @@ const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
 const categoryRouter = require('./routes/category');
+const itemRouter = require('./routes/item');
+
 mongoose.connect(process.env.DATABASE_URL, (err) => {
   console.log('Database connected successfully', err);
 });
@@ -22,5 +24,6 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
 
 app.use('/', indexRouter);
 app.use('/categories', categoryRouter);
+app.use('/items', itemRouter);
 
 app.listen(process.env.PORT || 3000);
