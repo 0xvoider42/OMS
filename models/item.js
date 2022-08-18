@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const imagePath = 'uploads/images';
+
 const itemSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -24,7 +26,7 @@ const itemSchema = new mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  image: {
+  itemImage: {
     type: String,
     required: true,
   },
@@ -36,3 +38,4 @@ const itemSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Item', itemSchema);
+module.exports.imagePath = imagePath;
