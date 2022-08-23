@@ -20,7 +20,7 @@ Router.get('/', async (req, res) => {
 
 // New item
 Router.get('/new', async (req, res) => {
-  renderNewPage(res, new Category());
+  renderNewPage(res, new Item());
 });
 
 // Create item
@@ -29,12 +29,15 @@ Router.post('/', upload.single('image'), async (req, res) => {
   const item = new Item({
     name: req.body.name,
     category: req.body.category,
-    createdDate: new Date(req.body.createdDate),
+    acquireDate: req.body.acquireDate,
     amount: req.body.amount,
-    imageName: fileName,
+    itemImage: fileName,
     description: req.body.description,
   });
-
+  console.log('CATEGORY', req.body.category);
+  console.log('DATE', req.body.acquireDate);
+  console.log('AMOUNT', req.body.amount);
+  console.log('DESCRIPTION', req.body.description);
   try {
     const newItem = await item.save();
     res.redirect('items');
