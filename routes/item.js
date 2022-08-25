@@ -2,6 +2,7 @@ const express = require('express');
 const Category = require('../models/category');
 const Item = require('../models/item');
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const uploadPath = path.join('public', Item.imagePath);
 const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif'];
@@ -15,7 +16,25 @@ const upload = multer({
 
 // All items
 Router.get('/', async (req, res) => {
-  res.send('All Books');
+  let query = Item.find();
+  if (req.query.name != '' && req.query.name != null) {
+    query = query.regex('name', new RegExp(req.query.name, 'i'));
+  }
+  if (req.query.addedBefore != '' && req.query.addedBefore != null) {
+    query = query.lte('acquireDate', req.query.addedBefore);
+  }
+  if (req.query.addedAfter != '' && req.query.addedAfter != null) {
+    query = query.gte('acquireDate', req.query.addedAfter);
+  }
+  try {
+    const items = await query.exec({});
+    res.render('items/index', {
+      items: items,
+      searchOptions: req.query,
+    });
+  } catch {
+    res.redirect('/');
+  }
 });
 
 // New item
@@ -34,17 +53,22 @@ Router.post('/', upload.single('image'), async (req, res) => {
     itemImage: fileName,
     description: req.body.description,
   });
-  console.log('CATEGORY', req.body.category);
-  console.log('DATE', req.body.acquireDate);
-  console.log('AMOUNT', req.body.amount);
-  console.log('DESCRIPTION', req.body.description);
   try {
     const newItem = await item.save();
     res.redirect('items');
   } catch {
+    if (item.itemImage != null) {
+      removeItemImage(item.itemImage);
+    }
     renderNewPage(res, item, true);
   }
 });
+
+function removeItemImage(fileName) {
+  fs.unlink(path.join(uploadPath, fileName), (err) => {
+    if (err) console.log(err);
+  });
+}
 
 // Renders new page in case of error
 async function renderNewPage(res, item, hasError = false) {

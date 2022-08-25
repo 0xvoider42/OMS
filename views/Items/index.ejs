@@ -1,0 +1,22 @@
+<h2>Search Items</h2>
+<form action="/items" method="GET">
+  <div>
+    <label>Item</label>
+    <input text="text" name="name" value="<%= searchOptions.name %>" />
+    <button type="submit">Search</button>
+  </div>
+  <div>
+    <label>Added After</label>
+    <input type="date" name="addedAfter" value="<%= searchOptions.addedAfter %>" />
+    <button type="submit">Search</button>
+  </div>
+  <div>
+    <label>Added Before</label>
+    <input type="date" name="addedBefore" value="<%= searchOptions.addedBefore %>" />
+    <button type="submit">Search</button>
+  </div>
+</form>
+<div>
+  <% items.forEach(el => { %>
+  <img height="150" width="100" src="<%=items.itemImagePath%>" /> <% }) %>
+</div>

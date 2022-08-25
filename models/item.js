@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const path = require('path');
 
 const imagePath = 'uploads/images';
 
@@ -35,6 +36,12 @@ const itemSchema = new mongoose.Schema({
     required: true,
     ref: 'Category',
   },
+});
+
+itemSchema.virtual('itemImagePath').get(function () {
+  if (this.itemImage != null) {
+    return path.join('/', imagePath, this.itemImage);
+  }
 });
 
 module.exports = mongoose.model('Item', itemSchema);
